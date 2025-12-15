@@ -5,29 +5,29 @@ const PALETTE = [
   [70,64,67],
 
   [164, 57, 49],
-    [70,64,67],
+    [70,64,67], //back to the middle color to get a smoother transition
 ];
-
-// 4 段过渡：0->1, 1->2, 2->3, 3->4
-// 数字越大：这一段占的“时间/面积”越多（出现更久）
+//weighs of gradient segments, controls time spent in each segment -> more surface area of that color
 const WEIGHTS = [3.0, 0.6, 2.0, 0.6];
-// 段分别是：0->1, 1->2, 2->3, 3->4, 4->0（最后一段就是接回去）
+let EDGES = [];
 
+let rez1; // noise resolution
+let colorBandScale;
 
-let STOPS = []; // 累积分段边界 0~1
+let zoff = 0; // z offset for 3D noise
 
-
-
-let rez1, sF;
-
-let simplePattern = false;
-
-let zoff = 0;          // 时间轴
-let img;               // 小分辨率画布
-const RENDER_W = 220;  // 越小越快，越大越清晰
+//optimization
+let img; //small image to render
+const RENDER_W = 220;  
 const RENDER_H = 220;
 
+//sound
 let song;
+
+//mouse tracking
+let lastMousePos = null;
+let mouseSpeed = 0;
+
 
 function preload() {
   song = loadSound('/audio/ambience.mp3');
@@ -38,43 +38,44 @@ function setup() {
   pixelDensity(1);
 
   img = createImage(RENDER_W, RENDER_H);
+  buildStops();   
+  setParams();
 
-  buildStops();     // <—— 加这一句
-  
-  randomizeParams();
+  userStartAudio();
+  song.loop();
 
 
 }
 
 function buildStops() {
   const sum = WEIGHTS.reduce((a, b) => a + b, 0);
-  STOPS = [0];
+  EDGES = [0];
   let acc = 0;
   for (let w of WEIGHTS) {
-    acc += w / sum;
-    STOPS.push(acc);
+    acc += w / sum;//proportion
+    EDGES.push(acc);
   }
-  STOPS[STOPS.length - 1] = 1; // 防浮点误差
+  EDGES[EDGES.length - 1] = 1;//prevent 0.999999 bug
 }
 
 function smoothstep(t) { return t * t * (3 - 2 * t); }
 
 function weightedGradient(t01) {
   const N = PALETTE.length;
-  let t = t01 % 1;          // 确保在 [0,1)
-  if (t < 0) t += 1;
+  let t = t01 % 1;        
+  if (t < 0){ t += 1; }
 
-  // 找到 t 落在哪段
+  // GPTtime:"this is where i do not know how to find the right color on the weighted band"
   let s = 0;
-  while (s < STOPS.length - 2 && t > STOPS[s + 1]) s++;
+  while (s < EDGES.length - 2 && t > EDGES[s + 1]) s++;
 
-  let a = STOPS[s];
-  let b = STOPS[s + 1];
+  let a = EDGES[s];
+  let b = EDGES[s + 1];
   let localT = (b === a) ? 0 : (t - a) / (b - a);
   localT = smoothstep(localT);
 
   let i0 = s % N;
-  let i1 = (i0 + 1) % N;    // ✅ 关键：最后一个会接回 0
+  let i1 = (i0 + 1) % N;   
 
   let c0 = PALETTE[i0];
   let c1 = PALETTE[i1];
@@ -91,66 +92,78 @@ function mapping(x) {
   return x - Math.floor(x);
 }
 
-function randomizeParams() {//这改成常量了！！！记得改function名字
+function setParams() {
   rez1 = 0.0007;
-  //   rez2 = 0.00035;
-  sF   = 20;
+  colorBandScale   = 20;
 }
 
-
-function smoothstep(t) { return t * t * (3 - 2 * t); }
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
 }
 
-function draw() {
-  
 
-  zoff += 0.002; // 动起来的速度（0.005~0.03 都可以试试）
+function calcMouseSpeed(){
+    var currentMousePos = createVector(mouseX, mouseY);
+    if (currentMousePos !== null && lastMousePos !== null){
+      mouseSpeed = p5.Vector.sub(currentMousePos, lastMousePos).mag();
+    }else{
+      mouseSpeed = 0;
+    }
+    lastMousePos = currentMousePos;
+}
+  
+function mouseSound(){
+    calcMouseSpeed();
+    let pitch = map(mouseSpeed, 0, 50, 0, 1);
+    song.rate(pitch); 
+
+}
+
+
+
+function draw() {
+
+  zoff += 0.002; 
 
   img.loadPixels();
 
-//鼠标影响颜色
+//scaling mouse position to small render img
   let mx = map(mouseX, 0, width, 0, RENDER_W);
   let my = map(mouseY, 0, height, 0, RENDER_H);
 
-  const MOUSE_RADIUS = 55;    // 鼠标影响范围（越大影响越广）
-  const MOUSE_POWER  = 0.5;  // 效果强度（后面会用）
+  const MOUSE_RADIUS = 55;    //effect range
+  const MOUSE_POWER  = 0.5;  //effect force
 
 
   for (let x = 0; x < RENDER_W; x++) {
     for (let y = 0; y < RENDER_H; y++) {
-        let d = dist(x, y, mx, my);
+        
+      //gpttime: "how the hell do I make the color moves around the mouse"
+      let d = dist(x, y, mx, my);
         let m = constrain(1 - d / MOUSE_RADIUS, 0, 1);
-        m = smoothstep(m); // 让影响更柔
+        m = smoothstep(m); 
 
 
-      // 把小图坐标映射到“原本的空间尺度”
+      // GPTtime: My render size is lagging so much is there a way to optimize? Tell me the steps of thinking.
       let sx = map(x, 0, RENDER_W, 0, width);
       let sy = map(y, 0, RENDER_H, 0, height);
 
-      // 3D noise：第三个参数就是时间 zoff
-      //   let n1 = noise(sx * rez1, sy * rez1, zoff);
-
-
+      //3d perlin noise
       let n1 = noise(sx * rez1, sy * rez1, zoff);
 
-      //鼠标影响
+      
       let col = map(n1, 0, 1, 0, 360);
+      let band = mapping(col / colorBandScale);
+      let band2 = (band + m * MOUSE_POWER) % 1; 
 
 
-      let band = mapping(col / sF);
-      let band2 = (band + m * MOUSE_POWER) % 1; // 鼠标附近沿着渐变环偏移
-
-
-      // 渐变：在相邻两色之间插值
-      //   const [r, g, b] = weightedGradient(band);
+      //interpolate color between tow color bands
       const [r, g, b] = weightedGradient(band2);
 
 
 
-      // 写进像素数组
+      //set pixels
       let idx = 4 * (x + y * RENDER_W);
       img.pixels[idx + 0] = r;
       img.pixels[idx + 1] = g;
@@ -163,11 +176,10 @@ function draw() {
 
   img.updatePixels();
 
-  // 放大显示
+  // resize
   image(img, 0, 0, width, height);
 
-  
-
+  mouseSound();
 
 }
 

@@ -29,7 +29,7 @@ $(document).ready(function() {
     // Chatbox
     $('.chat-trigger').on('click', function (e) {
         e.preventDefault();//for some reason I made the card links so wtf
-        e.stopPropagation(); // 不让事件冒泡到 document
+        e.stopPropagation(); 
         const chatText = $(this).data('chatbox');
         $('#chatbox .chatbox-text').html(chatText);
         
@@ -40,12 +40,12 @@ $(document).ready(function() {
         box.addClass('shake');
     });
 
-    // 点击 chatbox 本身，不关闭
+    //click other place to close
     $('#chatbox').on('click', function (e) {
         e.stopPropagation();
     });
 
-    // 点击页面其他地方 → 关闭
+   
     $(document).on('click', function () {
         $('#chatbox').hide();
     });

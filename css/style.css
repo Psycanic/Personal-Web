@@ -29,8 +29,8 @@ canvas {
   position: fixed;
   top: 0;
   left: 0;
-  z-index: -1;          /* 放到最底层 */
-  pointer-events: none; /* 让鼠标点击穿透，不挡网页交互 */
+  z-index: -1;     
+  pointer-events: none;
 }
 
 
