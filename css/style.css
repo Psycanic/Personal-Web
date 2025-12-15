@@ -1,0 +1,300 @@
+@font-face {
+  font-family: Ticketing;
+  src: url('/fonts/Ticketing.ttf');
+}
+
+@keyframes shake {
+  0%   { transform: translate(0, 0); }
+  20%  { transform: translate(-4px, 2px); }
+  40%  { transform: translate(4px, -2px); }
+  60%  { transform: translate(-3px, 1px); }
+  80%  { transform: translate(3px, -1px); }
+  100% { transform: translate(0, 0); }
+}
+
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+    border: rgb(229, 63, 63) 3px solid;
+
+  /* background: #000; */
+  font-family: Ticketing;
+  color: rgb(229, 63, 63);
+  text-shadow: black 1px 1px 2px;
+}
+
+canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -1;          /* 放到最底层 */
+  pointer-events: none; /* 让鼠标点击穿透，不挡网页交互 */
+}
+
+
+.wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  cursor: default;
+  /* z-index: -100; */
+}
+
+/* imgs move with mouse position*/
+.parallax-img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+ 
+  transform: translate(-50%, -50%);
+  will-change: transform;
+  transition: transform 0.1s linear; 
+  
+  min-width: 110%;
+  min-height: 110%;
+  object-fit: cover;
+}
+
+
+.overlay-horizontal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 10;
+  
+}
+
+/* rows */
+.top-bar,
+.bottom-bar {
+    position: absolute;
+    left: 0;
+    width: 98%;
+    height: 50px;
+    /* border: 2px solid #ccc; */
+    display: flex;
+    margin-left: 10px;
+    margin-right: 10px;
+    justify-content: space-between;
+}
+
+.top-bar {
+    top: 10px;
+    
+}
+
+.bottom-bar {
+    bottom: 10px;
+}
+
+/* columns */
+.overlay-vertical {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 11; 
+    pointer-events: none;
+    
+}
+
+.left-bar,
+.right-bar {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: 200px;
+    /* border: 2px solid #ccc; */
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; 
+    padding: 20px;                  
+    box-sizing: border-box;
+}
+
+.left-bar {
+    left: 0;
+    align-items: flex-start;          
+
+}
+
+/* 右边这条现在是 flex column!!! */
+.right-bar {
+    right: 0;
+    align-items: flex-end;         
+   
+}
+
+.right-bar-item {
+
+   width: 150px;
+  height: 30%; 
+  /* display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  flex-wrap: wrap; */
+
+
+}
+
+.right-top img {
+    width: 150px;
+    height: auto;
+    filter:brightness(0.1);
+}
+
+.right-bottom {
+  
+  /* width: 500px; */
+  pointer-events: auto;
+  text-align: right;
+  /* border: 1px solid blue; */
+}
+
+/* indivdual crads */
+.parallax-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: auto;
+}
+
+.card {
+  position: absolute; 
+  width: 160px;
+  height: 160px;
+
+  text-decoration: none;
+  color: inherit;
+
+  /* border: 1px solid rgba(255,255,255,0.7); */
+ 
+   box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+}
+
+
+.card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+
+  transition: transform 0.2s ease;
+}
+
+.card-overlay {
+position: absolute;
+  inset: 0;
+
+  background: rgba(0,0,0,0.6);
+  color: white;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 12px;
+  box-sizing: border-box;
+
+  opacity: 0;
+  transition: opacity 0.25s ease;
+
+}
+
+.card:hover .card-overlay {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
+/* card positions */
+#card-a {
+  top: 10%;
+  left: 15%;
+  height: 200px;
+  width: 200px;
+}
+
+#card-b {
+  top: 18%;
+  left: 40%;
+  height: 300px;
+  width: 120px;
+}
+
+
+#card-c {
+  top: 45%;
+  left: 20%;
+  height: 300px;
+  width: 300px;
+}
+#card-d {
+  top: 50%;
+  left: 60%;
+  height: 200px;
+  width: 200px;
+}
+#card-e {
+  top: 75%;
+  left: 40%;
+  height: 150px;
+  width: 200px;
+}
+
+.avatar {
+  position: absolute;
+  top: 30%;
+  right: 19%;
+  width: 100px;
+  height: auto;
+  /* border-radius: 50%; */
+  /* box-shadow: 0 4px 8px rgba(0,0,0,0.3); */
+}
+
+/* chatbox   */
+
+#chatbox {
+  position: absolute;
+  top: 200px;      
+  right: 20px;
+
+  display: none; 
+  z-index: 200;
+
+  pointer-events: auto;
+}
+
+
+.chatbox-bg {
+  width: 260px;        
+  height: auto;
+  display: block;
+}
+
+.chatbox-text {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  right: 20px;
+
+  color: black;
+  text-shadow: none;
+  margin-left: 30px;
+  font-size: 14px;
+  line-height: 1.4;
+
+  /* auto return */
+  white-space: normal;
+  word-break: break-word;
+}
+
+#chatbox.shake {
+  animation: shake 0.15s ease;
+}

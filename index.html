@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Nil Chen</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  
+
+<!-- p5js lib -->
+<script src="https://cdn.jsdelivr.net/npm/p5@1.11.11/lib/p5.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/p5@1.11.11/lib/addons/p5.sound.min.js"></script>
+
+
+  <script src="js/custom.js"></script>
+  <script language="javascript" type="text/javascript" src="js/sketch.js"></script>
+
+
+</head>
+<body>
+
+  <!-- dynamic layer -->
+<div class="wrapper">
+  <img class="parallax-img" src="images/bg.png" alt="bg" />
+
+  <div class="parallax-layer">
+
+    <a href="" class="card chat-trigger" id="card-a" data-chatbox="He can probably kill whoever's in the way to his work at midnight. Might just take you to hell in advance. Be respectful buddy!!">
+      <img src="images/IMG_2663.jpeg" class="card-img" />
+
+      <div class="card-overlay">
+        <h4>I STill Have Work Tomorrow</h4>
+        <p>3D original character design</p>
+      </div>
+    </a>
+
+    <a href="" class="card chat-trigger" id="card-b" data-chatbox="A comic about near-death experience. Viking style(probably)">
+      <img src="images/IMG_0446.jpeg" class="card-img" />
+
+      <div class="card-overlay">
+        <h4>The Urge to Slow Dying in the Snow</h4>
+        <p>comic wip</p>
+      </div>
+    </a>
+
+    <a href="" class="card chat-trigger" id="card-c" data-chatbox="kaubooi-Bibopu? Try print it out and take a break while you a rushing through the galaxy.">
+      <img src="images/IMG_9677.png" class="card-img" />
+
+      <div class="card-overlay">
+        <h4>Yes, It's A Smoke Box.</h4>
+        <p>Designed for the board game.</p>
+      </div>
+    </a>
+
+
+    <a href="" class="card chat-trigger" id="card-d" data-chatbox="Imagine the worm you hated most becomes your best friend after the apocolypse.">
+      <img src="images/boya1.png" class="card-img" />
+
+      <div class="card-overlay">
+        <h4>The Last of Us</h4>
+        <p>2D concepts art</p>
+      </div>
+    </a>
+
+    
+    <a href="" class="card chat-trigger" id="card-e" data-chatbox="bingbing bong pong bam bOOom!!!!!! Incorporated camera feedbacks and ancients' wisdoms.">
+      <img src="images/vdart1.png" class="card-img" />
+
+      <div class="card-overlay">
+        <h4>Strobing</h4>
+        <p>Made with a VideoMixer and CRTs.</p>
+      </div>
+    </a>
+    <div>
+      <img class="avatar" src="images/Red.gif" alt="avatar" />
+    </div>
+  </div>
+</div>
+  <!-- end of dynamic layer -->
+  
+
+  <!-- UI Fixed Layer -->
+  <!-- horizontal bars -->
+  <div class="overlay-horizontal">
+      <div class="top-bar">
+        <div>
+          <img src="images/Layer 1.png" alt="title" height="40px"/>
+        </div>
+        <div>
+          <img src="images/Layer 1.png" alt="title" height="40px"/>
+        </div>
+        <div>
+          <img src="images/Layer 1.png" alt="title" height="40px"/>
+        </div>
+      </div>
+      <div class="bottom-bar">
+        <div>
+          <img src="images/Layer 1.png" alt="title" height="40px"/>
+        </div>
+        <div>
+          <img src="images/Layer 1.png" alt="title" height="40px"/>
+        </div>
+        <div>
+          <img src="images/Layer 1.png" alt="title" height="40px"/>
+        </div>
+      </div>
+  </div>
+
+  <!-- vertical bars -->
+  <div class="overlay-vertical">
+      <div class="left-bar">
+        <div class="left-top left-bar-item">
+          <!-- 这里是你未来要放东西的“预留空间” -->
+
+        </div>
+        <div class="left-bottom left-bar-item">
+          <img src="images/chatbox.png" height="100px" alt="bg"/>
+           <h3>Hello！ This is Nil/Psycanic. </h3>
+           <h5>I am a 3D, 2D and game artist. My greatest love is for near-death beings, like vhs tapes, post-apocolypse humans, e-wastes, soviet union's brutalism and mushrooms.</h5>
+
+        </div>
+      </div>
+      <div class="right-bar">
+        <div class="right-top right-bar-item" id="logo">
+          <img src="images/logo.png" alt="logo"  />
+        </div>
+          <div class="right-bottom right-bar-item">
+            <!-- <h3>Contact Me</h3><br/> -->
+            psycanic@gmail.com
+            <a href="https://www.instagram.com/psycanic/" target="_blank">Instagram</a><br/>
+            <a href="https://www.artstation.com/psycanic" target="_blank">Artstation</a>
+            <a href="https://psycanic.itch.io" target="_blank">Itch.io</a>
+          </div>
+      </div>
+  </div>
+  <!-- end of UI Fixed Layer -->
+
+
+        <!-- 聊天气泡 -->
+    <div id="chatbox">
+      <img src="images/chatbox.png" class="chatbox-bg" />
+      <div class="chatbox-text">
+        
+      </div>
+    </div>
+
+
+
+</body>
+</html>
